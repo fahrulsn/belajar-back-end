@@ -28,19 +28,20 @@
 		$username = $_POST["username"];
 		$password = $_POST["password"];
 
-		// cek username 
+		// cari username 
 		$result = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
-		// cek password
+		// cek username
 		if (mysqli_num_rows($result) === 1){
 			$row = mysqli_fetch_assoc($result);
+			// cek password
 			if(password_verify($password, $row["password"])){
 
 				$_SESSION["login"] = true;
-				// $_SESSION["username"] = $_POST["username"];
-				setcookie('nama',$username,time()+(365*24*60*60));
-				//cek remember
+				// set cookie nama
+				setcookie('nama',$row['nama'],time()+(365*24*60*60));
+				// cek remember
 				if ( isset($_POST["remember"]) ){
-					//set cookie
+					//set cookie login
 					setcookie('id',$row["id"],time()+60);
 					setcookie('key',hash('sha256', $row["username"]),time()+60);
 				}
@@ -49,7 +50,7 @@
 				exit;
 			}	
 		}
-		// jika salah keluar error
+		// jika username tidak ada / password salah keluar error
 		$error = true;
 	}
 	if (isset($_POST["signup"])){
@@ -73,6 +74,9 @@
 			<h3 class="closesignup">X</h3>
 			<h1 style="text-align: center;">Daftar Akun</h1>
 			<form action="" method="post">
+				<label for="newnama">Masukkan nama</label>
+				<input type="text" name="newnama" id="newnama">
+
 				<label for="newusername">Masukkan username</label>
 				<input type="text" name="newusername" id="newusername">
 
@@ -82,7 +86,8 @@
 				<label for="newpassword2">Masukkan konfirmasi password</label>
 				<input type="password" name="newpassword2" id="newpassword2">
 
-				<button type="submit" style="width:100%;margin-top:7%" name="signup" class="btn-blue"><h3>Daftar</h3></button>
+
+				<button id="daftar" type="submit" style="width:100%;margin-top:7%" name="signup" class="btn-blue"><h3>Daftar</h3></button>
 			</form>
 		</div>
 	</div>
@@ -122,12 +127,12 @@
 		blacklayer.style.display = "flex";
 		loginbox.style.display = "none";
 		header.style.display = "none";
-	}
+	};
 
 	closesignup.addEventListener("click",function(){
 		blacklayer.style.display = "none";
 		loginbox.style.display = "flex";
 		header.style.display = "block";
-	})
+	});
 </script>
 </html>
